@@ -1,26 +1,109 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+//import { default as config } from "./firebaseConfig";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+const firebase = require("firebase/app");
+// Add the Firebase products that you want to use
+require("firebase/auth");
+require("firebase/firestore");
+
+const style = {
+  margin: "auto",
+  padding: 8,
+  textAlign: "center",
+};
+
+const chapters = [
+  28,
+  20,
+  16,
+  20,
+  15,
+  19,
+  52,
+  63,
+  28,
+  16,
+  16,
+  29,
+  20,
+  25,
+  17,
+  14,
+  36,
+];
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    let initialItems = [];
+    for (let i = 0; i < chapters.length; i++) {
+      for (let j = 1; j <= chapters[i]; j++) {
+        initialItems.push(`anime/chap-${i}/${j}.jpg`);
+      }
+    }
+
+    this.state = {
+      items: initialItems,
+      hasMore: true,
+      chapterNum: 0,
+      pageNum: 0,
+    };
+  }
+
+  fetchMoreData = () => {
+    const { items, chapterNum } = this.state;
+
+    if (chapterNum > chapters.length) {
+      this.setState({ hasMore: false });
+      return;
+    }
+
+    if (items.length >= chapters[chapterNum]) {
+      this.setState({
+        chapterNum: chapterNum + 1,
+      });
+    }
+
+    this.setState({
+      items: items.concat(Array.from({ length: 20 })),
+    });
+  };
+
+  getDirectories = () => {};
+
+  render() {
+    const { items, chapterNum, hasMore } = this.state;
+
+    console.log(
+      `chapterNum: ${chapterNum} 
+      chapters.length: ${chapters.length} 
+      items.length: ${items.length}`
+    );
+
+    return (
+      <div>
+        <h1>demo: react-infinite-scroll-component</h1>
+        <hr />
+        <InfiniteScroll
+          dataLength={items.length}
+          next={this.fetchMoreData}
+          hasMore={hasMore}
+          loader={<h4>Loading...</h4>}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+          {items.map((item, index) => (
+            <div style={style} key={chapterNum + index}>
+              index - #{index}
+              <br />
+              item - #{item}
+              <img src={item} alt={item} />
+            </div>
+          ))}
+        </InfiniteScroll>
+      </div>
+    );
+  }
 }
 
 export default App;

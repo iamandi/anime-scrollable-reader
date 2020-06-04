@@ -1,5 +1,10 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+firebaseConfig.js
+package-lock.json
+wemanga.com.txt
+public/anime
+
 # dependencies
 /node_modules
 /.pnp
