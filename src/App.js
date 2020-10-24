@@ -71,7 +71,21 @@ class App extends React.Component {
     });
   };
 
-  getDirectories = () => {};
+  getChapterNum = (index) => {
+    const { chapterNum } = this.state;
+    console.log(`index= ${index} chapterNum= ${chapterNum}`);
+    if (index % chapters[chapterNum] === 0) {
+      this.setState({
+        chapterNum: chapterNum + 1,
+      });
+    }
+  };
+
+  nextChapter = () => {
+    this.setState({
+      chapterNum: this.state.chapterNum + 1,
+    });
+  };
 
   render() {
     const { items, chapterNum, hasMore } = this.state;
@@ -84,7 +98,7 @@ class App extends React.Component {
 
     return (
       <div>
-        <h1>demo: react-infinite-scroll-component</h1>
+        <h1>Anime reader</h1>
         <hr />
         <InfiniteScroll
           dataLength={items.length}
@@ -94,9 +108,12 @@ class App extends React.Component {
         >
           {items.map((item, index) => (
             <div style={style} key={chapterNum + index}>
-              index - #{index}
+              {this.getChapterNum(index)}
               <br />
-              item - #{item}
+              {index % chapters[chapterNum] === 0
+                ? `Chapter #${this.state.chapterNum}`
+                : ""}
+              <br />
               <img src={item} alt={item} />
             </div>
           ))}
